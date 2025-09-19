@@ -20,8 +20,6 @@ std::vector<std::string> split(std::string str)
     while(iss >> mot)
         ret.push_back(mot);
 
-    // for (auto &m : ret)
-    //     std::cout << m << std::endl;
     return ret;
 }
 
@@ -41,7 +39,6 @@ std::vector<double> Reduce(std::vector<double> left, std::vector<double> right, 
     std::vector<double> ret = left;
     for (size_t i = 0; i < right.size(); i++)
     {
-        //std::cout << sign << std::endl;
         if (left[i])
         {
             if (sign == -1 || rightS[sign][0] == '+')
@@ -72,6 +69,7 @@ int main (int ac, char **av)
     std::vector<std::string> leftS;
     std::vector<std::string> rightS;
     std::vector<std::string> raw = split(av[1]);
+    double tmp;
     for (std::vector<std::string>::iterator it = raw.begin(); it != raw.end(); it++)
     {
         if (it[0][0] == 'X' || it[0][0] == '*')
@@ -93,10 +91,6 @@ int main (int ac, char **av)
                 right.push_back(std::stod(*it));
         }
     }
-    // for (std::vector<double>::iterator it = left.begin(); it != left.end(); it++)
-    // {
-    //     std::cout << *it << std::endl;
-    // }
     std::vector<double> reduce = Reduce(left, right, rightS);
     std::cout << "Reduced form: ";
     for (size_t i = 0; i < reduce.size(); i++)
@@ -106,6 +100,31 @@ int main (int ac, char **av)
             std::cout << leftS[i] << " ";
     }
     std::cout << "= 0"<< std::endl;
+    if (reduce.size() - 1 == 0)
+    {
+        if (reduce[0] >= 0)
+            std::cout << "Any real number is a solution." << std::endl;
+        else
+            std::cout << "No solution." << std::endl;
+        return 0;
+
+    }
     std::cout << "Polynomial degree: " << reduce.size() - 1 << std::endl;
+    if (reduce.size() - 1 == 3)
+    {
+        std::cout << "The polynomial degree is strictly greater than 2, can't solve." << std::endl;
+        return 0;
+    }
+    if (reduce.size() - 1 == 1)
+    {
+        tmp = reduce[0] / -reduce[1];
+        std::cout << "The solution is:\n" << tmp << std::endl;
+        return 0;
+    }
+    if (reduce.size() - 1 == 2)
+    {
+        
+    }
+
     return 0;
 }
