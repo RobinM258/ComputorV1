@@ -42,10 +42,10 @@ std::vector<double> Reduce(std::vector<double> left, std::vector<double> right, 
         if (left[i])
         {
             if (sign == -1 || rightS[sign][0] == '+')
-                {
-                    ret[i] = left[i] - right[i];
-                    sign++;
-                }
+            {
+                ret[i] = left[i] - right[i];
+                sign++;
+            }
             else 
             {
                 ret[i] = left[i] + right[i];
@@ -55,15 +55,29 @@ std::vector<double> Reduce(std::vector<double> left, std::vector<double> right, 
     }
     return ret;
 }
+double MySqrt(double n)
+{
+    double x = n;
+    double y = 1;
+    double e = 0.000001;
+
+    while (x - y > e)
+    {
+        x = (x + y) / 2;
+        y = n / x;
+    }
+    return x;
+}
 
 int main (int ac, char **av)
 {
     if (ac != 2)
     {
-        std::cout << "Error" << std::endl;
+        std::cout << "Error: Bad input." << std::endl;
         return 1;
     }
     int side  = 0;
+    int i = 1;
     std::vector<double> left;
     std::vector<double> right;
     std::vector<std::string> leftS;
@@ -123,8 +137,39 @@ int main (int ac, char **av)
     }
     if (reduce.size() - 1 == 2)
     {
+        while (i > 0)
+        {
+            if (leftS[i][0] == '-')
+                reduce[i - 1] = -reduce[i - 1];
+            i--;
+        }
         
+        double a = reduce[2];
+        double b = reduce[1];
+        double c = reduce[0];
+        double delta = (b * b) - (4 * a * c);
+    
+        std::cout << "a: " << a << ", b: " << b << ", c: " << c << ", delta: " << delta << std::endl;
+        if (delta < 0)
+        {
+            std::cout << "Discriminant is strictly negative, the two solutions are complex:" << std::endl;
+            std::cout << -b / (2 * a) << " + i * " << MySqrt(-delta) / (2 * a) << std::endl;
+            std::cout << -b / (2 * a) << " - i * " << MySqrt(-delta) / (2 * a) << std::endl;
+            return 0;
+        }
+        else if (delta == 0)
+        {
+            std::cout << "Discriminant is null, the solution is:" << std::endl;
+            std::cout << -b / (2 * a) << std::endl;
+            return 0;
+        }
+        else
+        {
+            std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
+            std::cout << (b + MySqrt(delta)) / (2 * a) << std::endl;
+            std::cout << (b - MySqrt(delta)) / (2 * a) << std::endl;
+            return 0;
+        }
     }
-
     return 0;
 }
