@@ -83,6 +83,7 @@ int main (int ac, char **av)
     std::vector<std::string> leftS;
     std::vector<std::string> rightS;
     std::vector<std::string> raw = split(av[1]);
+    std::vector<double> reduce;
     double tmp;
     for (std::vector<std::string>::iterator it = raw.begin(); it != raw.end(); it++)
     {
@@ -105,7 +106,10 @@ int main (int ac, char **av)
                 right.push_back(std::stod(*it));
         }
     }
-    std::vector<double> reduce = Reduce(left, right, rightS);
+    if (right.size() == 1 && right[0] == 0)
+        reduce = left;
+    else
+        reduce = Reduce(left, right, rightS);
     std::cout << "Reduced form: ";
     for (size_t i = 0; i < reduce.size(); i++)
     {
@@ -149,7 +153,7 @@ int main (int ac, char **av)
         double c = reduce[0];
         double delta = (b * b) - (4 * a * c);
     
-        std::cout << "a: " << a << ", b: " << b << ", c: " << c << ", delta: " << delta << std::endl;
+        //std::cout << "a: " << a << ", b: " << b << ", c: " << c << ", delta: " << delta << std::endl;
         if (delta < 0)
         {
             std::cout << "Discriminant is strictly negative, the two solutions are complex:" << std::endl;
