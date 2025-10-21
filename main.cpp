@@ -153,7 +153,7 @@ int main (int ac, char **av)
         double c = reduce[0];
         double delta = (b * b) - (4 * a * c);
     
-        //std::cout << "a: " << a << ", b: " << b << ", c: " << c << ", delta: " << delta << std::endl;
+
         if (delta < 0)
         {
             std::cout << "Discriminant is strictly negative, the two solutions are complex:" << std::endl;
