@@ -22,16 +22,6 @@ std::vector<std::string> split(std::string str)
     return ret;
 }
 
-std::string slice_side(std::string str, int side)
-{
-    size_t pos = str.find('=');
-    if (side == 1)
-        return str.substr(pos + 1);
-    else
-        return str.substr(0, pos);
-}
-
-
 std::vector<double> Reduce(std::vector<double> left, std::vector<double> right, std::vector<std::string> rightS)
 {
     int sign = -1;
@@ -70,18 +60,29 @@ double MySqrt(double n)
 
 int main (int ac, char **av)
 {
-    if (ac != 2 || !av[1][0])
+    std::string input;
+    if (ac == 1) 
     {
-        std::cout << "Error: Bad input." << std::endl;
+        if (!std::getline(std::cin, input) || input.empty()) 
+            return 0;
+    } 
+    else if (ac == 2) 
+    {
+        input = av[1];
+    } 
+    else 
+    {
+        std::cout << "Usage: ./computor \"equation\"" << std::endl;
         return 1;
     }
+
+    std::vector<std::string> raw = split(input);
     int side  = 0;
     int i = 1;
     std::vector<double> left;
     std::vector<double> right;
     std::vector<std::string> leftS;
     std::vector<std::string> rightS;
-    std::vector<std::string> raw = split(av[1]);
     std::vector<double> reduce;
     double tmp;
     for (std::vector<std::string>::iterator it = raw.begin(); it != raw.end(); it++)
