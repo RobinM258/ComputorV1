@@ -19,7 +19,6 @@ std::vector<std::string> split(std::string str)
 
     while(iss >> mot)
         ret.push_back(mot);
-
     return ret;
 }
 
@@ -71,7 +70,7 @@ double MySqrt(double n)
 
 int main (int ac, char **av)
 {
-    if (ac != 2)
+    if (ac != 2 || !av[1][0])
     {
         std::cout << "Error: Bad input." << std::endl;
         return 1;
@@ -89,7 +88,7 @@ int main (int ac, char **av)
     {
         if (it[0][0] == 'X' || it[0][0] == '*')
             continue;
-        else if (it[0][0] == '-' || it[0][0] == '+')
+        else if (it[0] == "-" || it[0] == "+")
         {
             if (side == 0)
                 leftS.push_back(*it);
@@ -110,6 +109,11 @@ int main (int ac, char **av)
         reduce = left;
     else
         reduce = Reduce(left, right, rightS);
+    if (reduce.size() == 0)
+    {
+        std::cout << "Error: Bad input." << std::endl;
+        return 1;
+    }
     std::cout << "Reduced form: ";
     for (size_t i = 0; i < reduce.size(); i++)
     {
