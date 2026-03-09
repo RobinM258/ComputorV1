@@ -19,7 +19,8 @@ double MySqrt(double n)
     double x = n, y = 1;
     for (int i = 0; i < 1000; i++) 
     { 
-        if (x <= 0) break;
+        if (x <= 0)
+            break;
         x = (x + y) / 2;
         y = n / x;
     }
@@ -37,7 +38,8 @@ int main(int ac, char **av)
     std::vector<std::string> tokens = split(av[1]);
     
     double side = 1.0; 
-    double sign = 1.0;  
+    double sign = 1.0;
+    int max_degree = 0;
     
     for (size_t i = 0; i < tokens.size(); ++i) 
     {
@@ -64,7 +66,6 @@ int main(int ac, char **av)
             sign = 1.0; 
         }
     }
-    int max_degree = 0;
     for (auto it = poly.begin(); it != poly.end(); ++it) 
     {
         if (it->second != 0) 
@@ -74,9 +75,10 @@ int main(int ac, char **av)
     bool first = true;
     for (int d = 0; d <= max_degree; ++d) 
     {
-        if (poly[d] == 0 && d != 0 && d != max_degree) continue;
+        if (poly[d] == 0 && d != 0 && d != max_degree) 
+            continue;
         if (!first) std::cout << (poly[d] >= 0 ? " + " : " - ");
-        else if (poly[d] < 0) std::cout << "-";
+            else if (poly[d] < 0) std::cout << "-";
         
         std::cout << (poly[d] < 0 ? -poly[d] : poly[d]) << " * X^" << d;
         first = false;
@@ -109,8 +111,10 @@ int main(int ac, char **av)
         std::cout << "The solution is:\n" << -poly[0] / poly[1] << std::endl;
     else 
     { 
-        if (poly[0] == 0) std::cout << "All real numbers are solutions." << std::endl;
-        else std::cout << "No solution." << std::endl;
+        if (poly[0] == 0)
+            std::cout << "All real numbers are solutions." << std::endl;
+        else
+            std::cout << "No solution." << std::endl;
     }
     return 0;
 }
