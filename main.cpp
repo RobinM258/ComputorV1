@@ -29,13 +29,21 @@ double MySqrt(double n)
 
 int main(int ac, char **av) 
 {
-    if (ac != 2) {
+    std::string input;
+    if (ac == 1)
+    {
+       if (!std::getline(std::cin, input))
+         return 1;
+    }
+    else if (ac == 2)
+        input = av[1];
+    else if (ac != 2) {
         std::cout << "Usage: ./computor \"equation\"" << std::endl;
         return 1;
     }
 
     std::map<int, double> poly; 
-    std::vector<std::string> tokens = split(av[1]);
+    std::vector<std::string> tokens = split(input);
     
     double side = 1.0; 
     double sign = 1.0;
