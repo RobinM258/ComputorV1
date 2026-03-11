@@ -1,188 +1,116 @@
-
-#include <string>
 #include <iostream>
-#include <vector>
-#include <utility>
-#include <cstdlib>
 #include <string>
+#include <vector>
 #include <sstream>
-#include <cctype>
 #include <map>
+#include <cmath>
 
-
-
-std::vector<std::string> split(std::string str)
+std::vector<std::string> split(std::string str) 
 {
-    std::vector<std::string> ret;
-    std::string mot;
+    std::vector<std::string> tokens;
+    std::string word;
     std::istringstream iss(str);
-
-    while(iss >> mot)
-        ret.push_back(mot);
-    return ret;
+    while (iss >> word) tokens.push_back(word);
+    return tokens;
 }
 
-std::vector<double> Reduce(std::vector<double> left, std::vector<double> right, std::vector<std::string> rightS)
+double MySqrt(double n) 
 {
-    int sign = -1;
-    std::vector<double> ret = left;
-    for (size_t i = 0; i < right.size(); i++)
-    {
-        if (left[i])
-        {
-            if (sign == -1 || rightS[sign][0] == '+')
-            {
-                ret[i] = left[i] - right[i];
-                sign++;
-            }
-            else 
-            {
-                ret[i] = left[i] + right[i];
-                sign++;
-            }
-        }
-    }
-    return ret;
-}
-double MySqrt(double n)
-{
-    double x = n;
-    double y = 1;
-    double e = 0.000001;
-
-    while (x - y > e)
-    {
+    double x = n, y = 1;
+    for (int i = 0; i < 1000; i++) 
+    { 
+        if (x <= 0) break;
         x = (x + y) / 2;
         y = n / x;
     }
     return x;
 }
 
-int main (int ac, char **av)
+int main(int ac, char **av) 
 {
-    std::string input;
-    if (ac == 1) 
-    {
-        if (!std::getline(std::cin, input) || input.empty()) 
-            return 0;
-    } 
-    else if (ac == 2) 
-    {
-        input = av[1];
-    } 
-    else 
-    {
+    if (ac != 2) {
         std::cout << "Usage: ./computor \"equation\"" << std::endl;
         return 1;
     }
 
-    std::vector<std::string> raw = split(input);
-    int side  = 0;
-    int i = 1;
-    std::vector<double> left;
-    std::vector<double> right;
-    std::vector<std::string> leftS;
-    std::vector<std::string> rightS;
-    std::vector<double> reduce;
-    double tmp;
-    for (std::vector<std::string>::iterator it = raw.begin(); it != raw.end(); it++)
+    std::map<int, double> poly; 
+    std::vector<std::string> tokens = split(av[1]);
+    
+    double side = 1.0; 
+    double sign = 1.0;  
+    
+    for (size_t i = 0; i < tokens.size(); ++i) 
     {
-        if (it[0][0] == 'X' || it[0][0] == '*')
-            continue;
-        else if (it[0] == "-" || it[0] == "+")
+        if (tokens[i] == "=") 
         {
-            if (side == 0)
-                leftS.push_back(*it);
-            else
-                rightS.push_back(*it);
+            side = -1.0;
+            sign = 1.0;
         }
-        else if (it[0][0] == '=')
-            side = 1;
-        else 
+        else if (tokens[i] == "-") 
+            sign = -1.0;
+        else if (tokens[i] == "+") 
+            sign = 1.0;
+        else if (isdigit(tokens[i][0]) || (tokens[i].size() > 1 && tokens[i][0] == '-')) 
         {
-            if (side == 0)
-                left.push_back(std::stod(*it));
-            else
-                right.push_back(std::stod(*it));
+            double coeff = std::stod(tokens[i]);
+            int degree = 0;
+
+            if (i + 2 < tokens.size() && tokens[i+2].find("X^") != std::string::npos) 
+            {
+                degree = std::stoi(tokens[i+2].substr(2));
+                i += 2; 
+            }
+            poly[degree] += coeff * sign * side;
+            sign = 1.0; 
         }
     }
-    if (right.size() == 1 && right[0] == 0)
-        reduce = left;
-    else
-        reduce = Reduce(left, right, rightS);
-    if (reduce.size() == 0)
+    int max_degree = 0;
+    for (auto it = poly.begin(); it != poly.end(); ++it) 
     {
-        std::cout << "Error: Bad input." << std::endl;
-        return 1;
+        if (it->second != 0) 
+            max_degree = it->first;
     }
     std::cout << "Reduced form: ";
-    for (size_t i = 0; i < reduce.size(); i++)
+    bool first = true;
+    for (int d = 0; d <= max_degree; ++d) 
     {
-        if (reduce[i] < 0 && leftS[i][0] == '-')
-            leftS[i][0] = '+';
-        else if (reduce[i] < 0 && leftS[i][0] == '+')
-            leftS[i][0] = '-';
-        std::cout << reduce[i]  << " * X^" << i  << " ";
-        if (i < reduce.size() - 1)
-            std::cout << leftS[i] << " ";
-    }
-    std::cout << "= 0"<< std::endl;
-    if (reduce.size() - 1 == 0)
-    {
-        if (reduce[0] >= 0)
-            std::cout << "Any real number is a solution." << std::endl;
-        else
-            std::cout << "No solution." << std::endl;
-        return 0;
-
-    }
-    std::cout << "Polynomial degree: " << reduce.size() - 1 << std::endl;
-    if (reduce.size() - 1 == 3)
-    {
-        std::cout << "The polynomial degree is strictly greater than 2, can't solve." << std::endl;
-        return 0;
-    }
-    if (reduce.size() - 1 == 1)
-    {
-        tmp = reduce[0] / -reduce[1];
-        std::cout << "The solution is:\n" << tmp << std::endl;
-        return 0;
-    }
-    if (reduce.size() - 1 == 2)
-    {
-        while (i > 0)
-        {
-            if (leftS[i][0] == '-')
-                reduce[i - 1] = -reduce[i - 1];
-            i--;
-        }
+        if (poly[d] == 0 && d != 0 && d != max_degree) continue;
+        if (!first) std::cout << (poly[d] >= 0 ? " + " : " - ");
+        else if (poly[d] < 0) std::cout << "-";
         
-        double a = reduce[2];
-        double b = reduce[1];
-        double c = reduce[0];
-        double delta = (b * b) - (4 * a * c);
-    
+        std::cout << (poly[d] < 0 ? -poly[d] : poly[d]) << " * X^" << d;
+        first = false;
+    }
+    std::cout << " = 0" << std::endl;
+    std::cout << "Polynomial degree: " << max_degree << std::endl;
 
-        if (delta < 0)
-        {
-            std::cout << "Discriminant is strictly negative, the two solutions are complex:" << std::endl;
-            std::cout << -b / (2 * a) << " + i * " << MySqrt(-delta) / (2 * a) << std::endl;
-            std::cout << -b / (2 * a) << " - i * " << MySqrt(-delta) / (2 * a) << std::endl;
-            return 0;
-        }
-        else if (delta == 0)
-        {
-            std::cout << "Discriminant is null, the solution is:" << std::endl;
-            std::cout << -b / (2 * a) << std::endl;
-            return 0;
-        }
-        else
+    if (max_degree > 2) 
+        std::cout << "The polynomial degree is strictly greater than 2, I can't solve." << std::endl;
+    else if (max_degree == 2) 
+    {
+        double a = poly[2], b = poly[1], c = poly[0];
+        double delta = (b * b) - (4 * a * c);
+        if (delta > 0)
         {
             std::cout << "Discriminant is strictly positive, the two solutions are:" << std::endl;
-            std::cout << (b + MySqrt(delta)) / (2 * a) << std::endl;
-            std::cout << (b - MySqrt(delta)) / (2 * a) << std::endl;
-            return 0;
+            std::cout << (-b - MySqrt(delta)) / (2 * a) << std::endl;
+            std::cout << (-b + MySqrt(delta)) / (2 * a) << std::endl;
         }
+        else if (delta == 0)
+            std::cout << "Discriminant is zero, the solution is:\n" << -b / (2 * a) << std::endl;
+        else 
+        {
+            std::cout << "Discriminant is negative, the two complex solutions are:" << std::endl;
+            std::cout << -b / (2 * a) << " + i * " << MySqrt(-delta) / (2 * a) << std::endl;
+            std::cout << -b / (2 * a) << " - i * " << MySqrt(-delta) / (2 * a) << std::endl;
+        }
+    } 
+    else if (max_degree == 1) 
+        std::cout << "The solution is:\n" << -poly[0] / poly[1] << std::endl;
+    else 
+    { 
+        if (poly[0] == 0) std::cout << "All real numbers are solutions." << std::endl;
+        else std::cout << "No solution." << std::endl;
     }
     return 0;
 }
