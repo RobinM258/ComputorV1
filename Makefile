@@ -1,4 +1,4 @@
-NAME = Converter
+NAME = computor
 
 F = main 
 

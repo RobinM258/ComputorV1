@@ -118,6 +118,10 @@ int main (int ac, char **av)
     std::cout << "Reduced form: ";
     for (size_t i = 0; i < reduce.size(); i++)
     {
+        if (reduce[i] < 0 && leftS[i][0] == '-')
+            leftS[i][0] = '+';
+        else if (reduce[i] < 0 && leftS[i][0] == '+')
+            leftS[i][0] = '-';
         std::cout << reduce[i]  << " * X^" << i  << " ";
         if (i < reduce.size() - 1)
             std::cout << leftS[i] << " ";
