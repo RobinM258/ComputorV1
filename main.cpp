@@ -32,19 +32,23 @@ int main(int ac, char **av)
     std::string input;
     if (ac == 1)
     {
-       if (!std::getline(std::cin, input))
-         return 1;
+        while (!std::getline(std::cin, input))
+            std::cout << "Please enter an equation: ";
     }
     else if (ac == 2)
         input = av[1];
-    else if (ac != 2) {
+    else if (ac != 2 || input.empty()) {
         std::cout << "Usage: ./computor \"equation\"" << std::endl;
         return 1;
     }
 
     std::map<int, double> poly; 
     std::vector<std::string> tokens = split(input);
-    
+    if (tokens.empty()) 
+    {
+        std::cout << "No equation provided." << std::endl;
+        return 1;
+    }
     double side = 1.0; 
     double sign = 1.0;
     int max_degree = 0;
@@ -110,9 +114,12 @@ int main(int ac, char **av)
             std::cout << "Discriminant is zero, the solution is:\n" << -b / (2 * a) << std::endl;
         else 
         {
+            double d_sign = 1.0;
+            if (a < 0) 
+                d_sign = -1.0;
             std::cout << "Discriminant is negative, the two complex solutions are:" << std::endl;
-            std::cout << -b / (2 * a) << " + i * " << MySqrt(-delta) / (2 * a) << std::endl;
-            std::cout << -b / (2 * a) << " - i * " << MySqrt(-delta) / (2 * a) << std::endl;
+            std::cout << -b * d_sign << "/" << (2 * a) * d_sign << " + " << MySqrt(-delta) * d_sign << "i/" << (2 * a) * d_sign << std::endl;
+            std::cout << -b * d_sign << "/" << (2 * a) * d_sign<< " - " << MySqrt(-delta) * d_sign << "i/" << (2 * a) * d_sign<< std::endl;
         }
     } 
     else if (max_degree == 1) 
