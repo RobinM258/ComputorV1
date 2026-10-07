@@ -18,7 +18,7 @@
     *   **Degré 0 :** Équation triviale / impossible.
     *   **Degré 1 :** Résolution linéaire simple ($x = -c / b$).
     *   **Degré 2 :** Résolution quadratique avec calcul du discriminant ($\Delta = b^2 - 4ac$), incluant la gestion des racines complexes.
-    *   **Degré > 2 :** Message d'erreur ou gestion spécifique (selon l'implémentation).
+    *   **Degré > 2 :** Message d'erreur.
 
 ---
 
