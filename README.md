@@ -28,12 +28,8 @@ Clone le dépôt sur ta machine et compile/exécute le projet :
 
 ```bash
 # Cloner le dépôt
-git clone [https://github.com/TonPseudo/computorv1.git](https://github.com/TonPseudo/computorv1.git)
+git clone https://github.com/RobinM258/computorv1.git
 cd computorv1
 
 make
-
-# Lancer le programme avec une équation
-python3 computorv1.py "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0"
-# ou en C :
-./computorv1 "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0"
+./computor "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0"
