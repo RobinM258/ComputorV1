@@ -27,7 +27,6 @@
 Clone le dépôt sur ta machine et compile/exécute le projet :
 
 ```bash
-# Cloner le dépôt
 git clone https://github.com/RobinM258/ComputorV1.git
 cd computorv1
 
